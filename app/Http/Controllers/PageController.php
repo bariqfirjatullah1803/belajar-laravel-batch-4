@@ -13,16 +13,29 @@ class PageController extends Controller
 
     public function home()
     {
-        return 'Home';
+        return view('pages.home');
     }
 
     public function about()
     {
-        return 'About';
+        return view('pages.about');
     }
 
     public function contact()
     {
-        return 'Contact';
+        return view('pages.contact');
+    }
+
+    public function program(Request $request)
+    {
+        $program = $request->program;
+
+        $collectProgram = collect($program);
+
+        if ($collectProgram) {
+            foreach ($collectProgram as $key => $value) {
+                echo $value;
+            }
+        }
     }
 }

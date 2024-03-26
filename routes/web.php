@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\AdminPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,12 +40,6 @@ Route::get('/redirect-test', function () {
 
 Route::view('/welcome-view', 'welcome');
 
-Route::prefix('/page')->controller(PageController::class)->name('page.')->group(function () {
-    Route::get('/home', 'home')->name('home');
-    Route::get('/about', 'about')->name('about');
-    Route::get('/contact', 'contact')->name('contact');
-});
-
 Route::get('/program/param/{data}', function ($data) {
     // Logic
     $response = explode(',', $data);
@@ -54,13 +49,17 @@ Route::get('/program/param/{data}', function ($data) {
         echo $value;
     }
 });
-Route::get('/program/request', function (Request $request) {
-    // dd($request->all());
-    $program = $request->program;
+Route::get('/program/request', [PageController::class, 'program']);
 
-    foreach ($program as $key => $value) {
-        echo $value;
-    }
+
+Route::prefix('/page')->controller(PageController::class)->name('page.')->group(function () {
+    Route::get('/home', 'home')->name('home');
+    Route::get('/about', 'about')->name('about');
+    Route::get('/contact', 'contact')->name('contact');
 });
 
-
+Route::prefix('/admin')->controller(AdminPageController::class)->name('admin.')->group(function () {
+    Route::get('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('/chart', 'chart')->name('chart');
+    Route::get('/table', 'table')->name('table');
+});
