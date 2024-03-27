@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\PageController;
@@ -63,3 +65,21 @@ Route::prefix('/admin')->controller(AdminPageController::class)->name('admin.')-
     Route::get('/chart', 'chart')->name('chart');
     Route::get('/table', 'table')->name('table');
 });
+
+Route::prefix('/school')->controller(SchoolController::class)->name('school.')->group(function () {
+    Route::get('/', 'index')->name('index');
+
+    Route::get('/create', 'create')->name('create');
+    Route::post('/', 'store')->name('store');
+
+    Route::get('/{id}/edit', 'edit')->name('edit');
+    Route::put('/{id}', 'update')->name('update');
+
+    Route::delete('/{id}', 'destroy')->name('destroy');
+});
+
+
+Route::resource('/student', StudentController::class)->except(['show']);
+
+
+
