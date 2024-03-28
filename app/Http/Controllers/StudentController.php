@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\School;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,9 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        $students = Student::with('school')->get();
+
+        return view('pages.student.index', compact('students'));
     }
 
     /**
@@ -20,7 +23,9 @@ class StudentController extends Controller
      */
     public function create()
     {
-        //
+        $schools = School::all();
+
+        return view('pages.student.create', compact('schools'));
     }
 
     /**
@@ -28,7 +33,19 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'school' => 'required',
+        ]);
+
+        Student::create([
+            'name' => $request->name,
+            'address' => $request->address,
+            'school_id' => $request->school,
+        ]);
+
+        return redirect()->route('student.index');
     }
 
     /**
@@ -44,7 +61,9 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        //
+        $schools = School::all();
+
+        return view('pages.student.edit', compact('student', 'schools'));
     }
 
     /**
@@ -52,7 +71,19 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'school' => 'required',
+        ]);
+
+        $student->update([
+            'name' => $request->name,
+            'address' => $request->address,
+            'school_id' => $request->school
+        ]);
+
+        return redirect()->route('student.index');
     }
 
     /**
@@ -60,6 +91,8 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        //
+        $student->delete();
+
+        return redirect()->route('student.index');
     }
 }

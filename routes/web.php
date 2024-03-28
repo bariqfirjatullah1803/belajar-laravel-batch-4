@@ -66,20 +66,37 @@ Route::prefix('/admin')->controller(AdminPageController::class)->name('admin.')-
     Route::get('/table', 'table')->name('table');
 });
 
-Route::prefix('/school')->controller(SchoolController::class)->name('school.')->group(function () {
-    Route::get('/', 'index')->name('index');
 
-    Route::get('/create', 'create')->name('create');
-    Route::post('/', 'store')->name('store');
+Route::middleware('auth')->group(function () {
+    // Route School
 
-    Route::get('/{id}/edit', 'edit')->name('edit');
-    Route::put('/{id}', 'update')->name('update');
+    Route::middleware('role:admin')->prefix('/school')->controller(SchoolController::class)->name('school.')->group(function () {
+        // List
+        Route::get('/', 'index')->name('index');
 
-    Route::delete('/{id}', 'destroy')->name('destroy');
+        // Create
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+
+        // Show
+        Route::get('/{id}', 'show')->name('show');
+
+        // Edit
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+
+        // Destroy
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+
+    // Route Student
+    Route::middleware('role:admin|member')->group(function () {
+        Route::resource('/student', StudentController::class)->except(['show']);
+    });
 });
 
 
-Route::resource('/student', StudentController::class)->except(['show']);
+Auth::routes();
+Route::redirect('register', 'login');
 
-
-
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

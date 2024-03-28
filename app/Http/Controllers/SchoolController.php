@@ -34,6 +34,15 @@ class SchoolController extends Controller
         return redirect()->route('school.index');
     }
 
+    public function show($id)
+    {
+        $school = School::with('students')->findOrFail($id);
+
+        $students = $school->students;
+
+        return view('pages.student.index', compact('students'));
+    }
+
     public function edit($id)
     {
         $school = School::findOrFail($id);
